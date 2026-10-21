@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 // The city search box. It only collects a city name and hands it to the
 // parent through `onSearch`. It doesn't fetch any data itself.
-function SearchBar({ onSearch }) {
+// `disabled` turns the button off while a search is already running.
+function SearchBar({ onSearch, disabled = false }) {
   // What's currently typed in the box.
   const [text, setText] = useState('')
   // A friendly hint shown if someone presses Search with an empty box.
@@ -36,7 +37,9 @@ function SearchBar({ onSearch }) {
         autoComplete="address-level2"
         aria-describedby="search-hint"
       />
-      <button type="submit">Search</button>
+      <button type="submit" disabled={disabled}>
+        {disabled ? 'Searching…' : 'Search'}
+      </button>
       <p id="search-hint" className="search-hint" aria-live="polite">
         {hint}
       </p>

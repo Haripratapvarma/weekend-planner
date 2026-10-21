@@ -10,6 +10,9 @@
   --accent-hover: #1d4ed8;
   --accent-text: #ffffff;
   --hint: #b45309;
+  --error-text: #991b1b;
+  --error-bg: #fef2f2;
+  --error-border: #fca5a5;
 
   --radius: 10px;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -33,6 +36,9 @@
     --accent-hover: #93c5fd;
     --accent-text: #0b1220;
     --hint: #fbbf24;
+    --error-text: #fecaca;
+    --error-bg: #2a1215;
+    --error-border: #7f1d1d;
   }
 }
 
