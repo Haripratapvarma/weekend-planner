@@ -3,6 +3,7 @@ import SearchBar from './components/SearchBar.jsx'
 import Loading from './components/Loading.jsx'
 import ErrorMessage from './components/ErrorMessage.jsx'
 import { findCity } from './lib/weather.js'
+import { getWeekendDates, todayInTimeZone, formatDay } from './lib/weekend.js'
 import './App.css'
 
 // Shows coordinates the way people read them, e.g. "48.85°N, 2.35°E".
@@ -10,6 +11,14 @@ function formatCoordinates(latitude, longitude) {
   const lat = `${Math.abs(latitude).toFixed(2)}°${latitude >= 0 ? 'N' : 'S'}`
   const lon = `${Math.abs(longitude).toFixed(2)}°${longitude >= 0 ? 'E' : 'W'}`
   return `${lat}, ${lon}`
+}
+
+// e.g. "Fri, Oct 23 – Sun, Oct 25", or just "Sun, Oct 25" on a Sunday.
+function describeWeekend(timezone) {
+  const dates = getWeekendDates(todayInTimeZone(timezone))
+  const first = formatDay(dates[0])
+  const last = formatDay(dates[dates.length - 1])
+  return dates.length === 1 ? first : `${first} – ${last}`
 }
 
 function App() {
@@ -73,6 +82,10 @@ function App() {
             <p className="place-details">
               {formatCoordinates(place.latitude, place.longitude)} · Time zone:{' '}
               {place.timezone}
+            </p>
+            <p className="weekend-range">
+              <span aria-hidden="true">🗓️ </span>
+              This weekend: <strong>{describeWeekend(place.timezone)}</strong>
             </p>
           </section>
         )}

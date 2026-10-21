@@ -161,6 +161,14 @@
   font-size: 0.9rem;
 }
 
+.weekend-range {
+  margin: 12px 0 0;
+}
+
+.weekend-range strong {
+  color: var(--text-strong);
+}
+
 /* ---------- Footer ---------- */
 .app-footer {
   padding: 16px 0 24px;
