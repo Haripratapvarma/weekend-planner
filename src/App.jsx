@@ -1,9 +1,11 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import SearchBar from './components/SearchBar.jsx'
 import Loading from './components/Loading.jsx'
 import ErrorMessage from './components/ErrorMessage.jsx'
 import WeatherForecast from './components/WeatherForecast.jsx'
+import EventList from './components/EventList.jsx'
 import { findCity, getWeekendForecast } from './lib/weather.js'
+import { getEvents } from './lib/events.js'
 import { getWeekendDates, todayInTimeZone, formatDay } from './lib/weekend.js'
 import './App.css'
 
@@ -22,7 +24,7 @@ function describeWeekend(dates) {
 }
 
 function App() {
-  // Which screen to show: 'idle' | 'loading' | 'error' | 'success'.
+  // Weather part. Which screen to show: 'idle' | 'loading' | 'error' | 'success'.
   const [status, setStatus] = useState('idle')
   // What the spinner says, e.g. "Finding Paris…".
   const [loadingMessage, setLoadingMessage] = useState('')
@@ -32,10 +34,35 @@ function App() {
   const [weekendDates, setWeekendDates] = useState([])
   // The forecast: { units, days: [...] }.
   const [forecast, setForecast] = useState(null)
-  // The friendly error message, if a search fails.
+  // The friendly error message, if the weather part fails.
   const [error, setError] = useState('')
 
+  // Events part, with its own status so weather can show while events load.
+  const [eventsStatus, setEventsStatus] = useState('idle')
+  const [events, setEvents] = useState([])
+  const [eventsError, setEventsError] = useState('')
+
+  // Counts searches. If an older search finishes after a newer one started,
+  // its results are ignored so they can't overwrite the newer city.
+  const latestSearch = useRef(0)
+
+  async function loadEvents(found, dates, searchId) {
+    setEventsStatus('loading')
+    setEventsError('')
+    try {
+      const weekendEvents = await getEvents(found, dates)
+      if (searchId !== latestSearch.current) return // a newer search started
+      setEvents(weekendEvents)
+      setEventsStatus('success')
+    } catch (err) {
+      if (searchId !== latestSearch.current) return
+      setEventsError(err.message)
+      setEventsStatus('error')
+    }
+  }
+
   async function handleSearch(cityName) {
+    const searchId = ++latestSearch.current
     setStatus('loading')
     setError('')
     setLoadingMessage(`Finding ${cityName}…`)
@@ -43,19 +70,25 @@ function App() {
     try {
       // 1. City name -> place (coordinates and time zone).
       const found = await findCity(cityName)
+      if (searchId !== latestSearch.current) return
 
       // 2. Work out "this weekend" in that city's own time zone.
       const dates = getWeekendDates(todayInTimeZone(found.timezone))
 
-      // 3. Get the forecast for just those days.
+      // 3. Start loading events now (not waiting for it), alongside the forecast.
+      loadEvents(found, dates, searchId)
+
+      // 4. Get the forecast for just those days.
       setLoadingMessage(`Getting the weekend forecast for ${found.name}…`)
       const weekendForecast = await getWeekendForecast(found, dates)
+      if (searchId !== latestSearch.current) return
 
       setPlace(found)
       setWeekendDates(dates)
       setForecast(weekendForecast)
       setStatus('success')
     } catch (err) {
+      if (searchId !== latestSearch.current) return
       setError(err.message)
       setStatus('error')
     }
@@ -106,6 +139,18 @@ function App() {
             </section>
 
             <WeatherForecast forecast={forecast} />
+
+            <section className="events" aria-labelledby="events-heading">
+              <h2 id="events-heading">Events this weekend</h2>
+
+              {eventsStatus === 'loading' && <Loading message="Finding events…" />}
+
+              {eventsStatus === 'error' && <ErrorMessage message={eventsError} />}
+
+              {eventsStatus === 'success' && (
+                <EventList events={events} dates={weekendDates} placeName={place.name} />
+              )}
+            </section>
           </>
         )}
       </main>

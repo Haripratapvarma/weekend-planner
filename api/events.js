@@ -11,6 +11,7 @@ const MAX_EVENTS = 50
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/
 
 const MAX_DAYS = 3 // Friday to Sunday; also stops anyone asking for a huge range
+const RETRY_DELAY_MS = 1100 // how long to wait before retrying when told to slow down
 
 // "2026-10-23" plus 1 day -> "2026-10-24".
 function addDays(dateString, days) {
@@ -92,6 +93,12 @@ async function fetchEventsForDay({ apiKey, latitude, longitude, date, size }) {
   let response
   try {
     response = await fetch(url)
+    // Ticketmaster allows about 5 requests per second. If we're asked to slow
+    // down (HTTP 429), wait a moment and try once more before giving up.
+    if (response.status === 429) {
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
+      response = await fetch(url)
+    }
   } catch {
     throw new FriendlyError(502, "We couldn't reach Ticketmaster. Please try again in a minute.")
   }

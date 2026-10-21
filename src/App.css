@@ -248,6 +248,126 @@
   font-size: 0.8rem;
 }
 
+/* ---------- Events ---------- */
+.events {
+  margin: 40px 0 0;
+}
+
+.events > h2 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+}
+
+.event-day {
+  margin: 20px 0 0;
+}
+
+.event-day h3 {
+  margin: 0 0 12px;
+  padding-bottom: 6px;
+  font-size: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.event-count {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.events-empty {
+  margin: 12px 0 0;
+}
+
+/* 1 column on phones; more columns on wider screens (see bottom of file). */
+.event-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.event-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9; /* reserves space so the page doesn't jump while loading */
+  object-fit: cover;
+  background: var(--border);
+}
+
+.event-image-placeholder {
+  display: grid;
+  place-items: center;
+  font-size: 2.5rem;
+}
+
+.event-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px 14px;
+}
+
+.event-category {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.event-name {
+  display: -webkit-box;
+  margin: 0 0 4px;
+  overflow: hidden;
+  font-size: 1rem;
+  -webkit-line-clamp: 3; /* very long names stop after 3 lines */
+  -webkit-box-orient: vertical;
+}
+
+.event-meta {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.event-link {
+  align-self: flex-start;
+  margin-top: auto; /* pushes the button to the bottom so buttons line up */
+  padding: 8px 14px;
+  font-weight: 600;
+  color: var(--accent-text);
+  text-decoration: none;
+  background: var(--accent);
+  border-radius: var(--radius);
+}
+
+/* Space above the button (its margin-top is used for the push to the bottom). */
+.event-body .event-meta:last-of-type {
+  margin-bottom: 8px;
+}
+
+.event-link:hover {
+  background: var(--accent-hover);
+}
+
+.event-link:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ---------- Footer ---------- */
 .app-footer {
   padding: 16px 0 24px;
@@ -295,5 +415,16 @@
   .day-extra {
     flex-direction: row;
     gap: 12px;
+  }
+
+  .event-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- Wide screens (laptops and up) ---------- */
+@media (min-width: 900px) {
+  .event-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
