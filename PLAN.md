@@ -40,8 +40,8 @@ Browser  <--only the event info, never the key--
 ```
 
 The specific safeguards:
-1. **`.env.local`**: This file lives only on your computer and holds `TICKETMASTER_API_KEY=your-key`.
-2. **`.gitignore`**: This file lists `.env.local`, so Git never uploads it to GitHub. We'll check this with `git status` before the first commit.
+1. **`.env`**: This file lives only on your computer and holds `TICKETMASTER_API_KEY=your-key`. (It was first planned as `.env.local`, but `vercel dev` reads `.env`.)
+2. **`.gitignore`**: This file lists `.env`, so Git never uploads it to GitHub. We'll check this with `git status` before the first commit.
 3. **No `VITE_` prefix.** This is an important Vite rule: any setting whose name starts with `VITE_` gets copied into the browser code. Our key name won't start with `VITE_`, so only the server function can read it.
 4. **`.env.example`** goes on GitHub with a placeholder value (`TICKETMASTER_API_KEY=paste-your-key-here`), so other people can see what's needed without seeing your real key.
 5. **On Vercel**, you'll paste the key into Project → Settings → Environment Variables. That's how the live site gets it.
@@ -58,9 +58,9 @@ weekend-planner/
 ├─ index.html              The one HTML page. React fills it in.
 ├─ package.json            The project's "ID card": its name, the packages it uses, and shortcut commands (npm run dev, npm test).
 ├─ vite.config.js          Settings for Vite (and for Vitest).
-├─ .gitignore              Files Git should never upload (node_modules, .env.local).
+├─ .gitignore              Files Git should never upload (node_modules, .env).
 ├─ .env.example            A safe template that shows which secret is needed.
-├─ .env.local              YOUR real key. Stays on your computer only.
+├─ .env                    YOUR real key. Stays on your computer only.
 ├─ README.md               The project's front page on GitHub: screenshot, live link, how to run it, what you learned.
 ├─ api/
 │  └─ events.js            The secret-keeping middleman. Gets a location from the browser, calls Ticketmaster with the key,
@@ -92,7 +92,7 @@ weekend-planner/
 - **Weather icons:** Emoji (☀️ ⛅ 🌧️ ⛈️ ❄️). There are no image files to manage, and they look fine on phones.
 - **Indoor/Outdoor:** Ticketmaster doesn't say whether an event is indoors, so we'll guess from words in the event, venue and genre names. Words like "festival", "park", "amphitheater", "fair", "garden", "outdoor" or "beach" mean **Outdoor**. Everything else is **Indoor**. The README will say honestly that this is a guess. That's a good thing to talk about in interviews.
 - **"Bad weather":** A day counts as bad if there's a 50% or higher chance of rain, a thunderstorm or snow code, or strong wind. An **Outdoor** event on a bad day gets a ⚠️ banner such as "Rain likely (70%). Bring a jacket or check for updates."
-- **Ticketmaster request:** Events within about 25 miles of the city's coordinates, from Friday 00:00 to Sunday 23:59, sorted by date, up to about 50 results. We'll double-check the exact settings against Ticketmaster's documentation in that step.
+- **Ticketmaster request:** Events within about 25 miles of the city's coordinates, asked for one day at a time in the city's local time (so Saturday and Sunday aren't crowded out in big cities), most relevant first, then sorted by date and time. Up to 50 results.
 
 ---
 
@@ -129,8 +129,8 @@ Fetch the daily forecast, then build `weatherCodes.js` (with tests), `WeatherFor
 ✅ Test: Searching a city shows 3 cards with the right day names, temperatures, rain chance and icons. A spinner shows while it loads.
 
 **Step 7: The secret-keeping function**
-Create `.env.local`, check that `.gitignore` lists it, write `api/events.js`, and run the app locally with `vercel dev` so the function works on your computer.
-✅ Test: Visiting `http://localhost:3000/api/events?lat=30.27&lon=-97.74&...` in the browser shows a simple list of events. `git status` does **not** list `.env.local`.
+Create `.env`, check that `.gitignore` lists it, write `api/events.js`, and run the app locally with `vercel dev` so the function works on your computer.
+✅ Test: Visiting `http://localhost:3000/api/events?lat=30.27&lon=-97.74&...` in the browser shows a simple list of events. `git status` does **not** list `.env`.
 
 **Step 8: Event list**
 Write `lib/events.js`, `EventList` and `EventCard`, grouped by day.
