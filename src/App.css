@@ -320,6 +320,36 @@
   padding: 12px 14px 14px;
 }
 
+.events-note {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.event-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.setting-tag {
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: help;
+}
+
+.setting-outdoor {
+  color: var(--outdoor-text);
+  background: var(--outdoor-bg);
+}
+
+.setting-indoor {
+  color: var(--indoor-text);
+  background: var(--indoor-bg);
+}
+
 .event-category {
   margin: 0;
   font-size: 0.75rem;

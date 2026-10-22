@@ -13,6 +13,10 @@
   --error-text: #991b1b;
   --error-bg: #fef2f2;
   --error-border: #fca5a5;
+  --outdoor-text: #166534;
+  --outdoor-bg: #dcfce7;
+  --indoor-text: #374151;
+  --indoor-bg: #e5e7eb;
 
   --radius: 10px;
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -39,6 +43,10 @@
     --error-text: #fecaca;
     --error-bg: #2a1215;
     --error-border: #7f1d1d;
+    --outdoor-text: #bbf7d0;
+    --outdoor-bg: #14532d;
+    --indoor-text: #e5e7eb;
+    --indoor-bg: #374151;
   }
 }
 

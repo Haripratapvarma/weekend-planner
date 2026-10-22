@@ -1,4 +1,5 @@
 import { formatTime } from '../lib/events.js'
+import { classifyEvent } from '../lib/classify.js'
 
 // Ticketmaster sometimes uses "Undefined" as a category; we just hide it.
 function category(event) {
@@ -12,6 +13,7 @@ function category(event) {
 function EventCard({ event }) {
   const venue = [event.venue.name, event.venue.city].filter(Boolean).join(', ')
   const label = category(event)
+  const { setting, reason } = classifyEvent(event)
 
   return (
     <li className="event-card">
@@ -32,7 +34,15 @@ function EventCard({ event }) {
       )}
 
       <div className="event-body">
-        {label && <p className="event-category">{label}</p>}
+        <div className="event-tags">
+          {/* Hovering the tag shows why we guessed indoor or outdoor. */}
+          <span className={`setting-tag setting-${setting}`} title={reason}>
+            <span aria-hidden="true">{setting === 'outdoor' ? '🌳 ' : '🏠 '}</span>
+            {setting === 'outdoor' ? 'Outdoor' : 'Indoor'}
+            <span className="visually-hidden"> (best guess: {reason})</span>
+          </span>
+          {label && <span className="event-category">{label}</span>}
+        </div>
         <h4 className="event-name">{event.name}</h4>
         <p className="event-meta">
           <span aria-hidden="true">🕒 </span>

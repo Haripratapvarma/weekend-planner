@@ -142,6 +142,9 @@ function App() {
 
             <section className="events" aria-labelledby="events-heading">
               <h2 id="events-heading">Events this weekend</h2>
+              <p className="events-note">
+                Indoor/Outdoor tags are a best guess from the venue and type of event.
+              </p>
 
               {eventsStatus === 'loading' && <Loading message="Finding events…" />}
 
